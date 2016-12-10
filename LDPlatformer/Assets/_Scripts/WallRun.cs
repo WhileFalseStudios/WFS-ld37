@@ -14,6 +14,13 @@ public class WallRun : MonoBehaviour {
     [SerializeField]
     private PlayerController playerController;
 
+    [SerializeField]
+    float WallRunMaxTime = 5.0f;
+    float runTime;
+
+    [SerializeField]
+    float WallRunDistance = 0.5f;
+
     //[SerializeField]
     //FirstPersonController firstPersonController;
 
@@ -32,17 +39,24 @@ public class WallRun : MonoBehaviour {
 
     void Update()
     {
-        if (!(DetectRightWall() && DetectLeftWall()))
+        bool dLeft = DetectLeftWall(); //Better than raycasting 500 times per frame
+        bool dRight = DetectRightWall();
+
+        if (!(dRight && dLeft)) //What the?
         {
-            if (DetectLeftWall() || DetectRightWall())
+            if ((dLeft || dRight) && runTime <= WallRunMaxTime)
             {
                 // Since there's no animation yet, I'm just putting them together
                 playerController.gravityMultiplier = 0.97f;
+                runTime += Time.deltaTime; //Doesnt work
+
+                playerController.StickToWall(hit.normal);                
 
                 // BTW, this is my Unity Player Controller Setup: Walk 20, Run 40, Air Control 6, Terminal 20, Air Max 6, Friction 2, Jump Height 5, Gravity Multiplier 0
             }
             else
             {
+                runTime = 0;
                 playerController.gravityMultiplier = 0.0f;
             }
         }
@@ -83,9 +97,9 @@ public class WallRun : MonoBehaviour {
 
     bool DetectRightWall()
     {
-        Debug.DrawLine(player.transform.position, player.transform.right * 1 + player.transform.position, Color.magenta);
+        Debug.DrawLine(player.transform.position, player.transform.right * WallRunDistance + player.transform.position, Color.magenta);        
 
-        if (Physics.Linecast(player.transform.position, player.transform.right * 1 + player.transform.position, out hit))
+        if (Physics.Linecast(player.transform.position, player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
             if (hit.collider.material.name != notWall.name + " (Instance)")
             {
@@ -97,9 +111,9 @@ public class WallRun : MonoBehaviour {
 
     bool DetectLeftWall()
     {
-        Debug.DrawLine(player.transform.position, -player.transform.right * 1 + player.transform.position, Color.green);
+        Debug.DrawLine(player.transform.position, -player.transform.right * WallRunDistance + player.transform.position, Color.green);
 
-        if (Physics.Linecast(player.transform.position, -player.transform.right * 1 + player.transform.position, out hit))
+        if (Physics.Linecast(player.transform.position, -player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
             if (hit.collider.material.name != notWall.name + " (Instance)")
             {

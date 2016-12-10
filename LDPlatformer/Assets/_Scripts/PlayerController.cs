@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
     float offsetYaw = 0.0f;
     float offsetPitch = 0.0f;
     float fov = 90.0f;
-    
+
     bool runMode = false;
 
     Vector3 move;
@@ -50,6 +50,10 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    Vector3 oldPos;
+
+    Vector3 velocity;
+
     // Use this for initialization
     void Start()
     {
@@ -60,6 +64,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        velocity = transform.position - oldPos;
         Cursor.lockState = CursorLockMode.Locked;
         Look();
 
@@ -81,6 +86,8 @@ public class PlayerController : MonoBehaviour
             AirMove(move.y);
             //jump = false;
         }
+                
+        oldPos = transform.position;
 
         //if (!previouslyGrounded && controller.isGrounded)
         //{
@@ -125,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     void AirMove(float oldy)
     {
-        move = controller.velocity;        
+        move = controller.velocity;
         move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
@@ -136,6 +143,18 @@ public class PlayerController : MonoBehaviour
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
+    }
+
+    public void StickToWall(Vector3 wallNormal)
+    {
+        RaycastHit stick = new RaycastHit();
+
+        Debug.DrawRay(gameObject.transform.position, wallNormal * -1, Color.cyan);
+        if (Physics.Raycast(gameObject.transform.position, wallNormal * -1, out stick, 1.0f))
+        {
+            //gameObject.transform.position += (gameObject.transform.position - stick.point) - new Vector3(controller.radius, 0, controller.radius);
+            gameObject.transform.position = stick.point + (wallNormal * (controller.radius + 0.1f));
+        }
     }
 
     void Footsteps()
