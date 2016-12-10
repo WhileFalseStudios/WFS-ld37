@@ -6,31 +6,70 @@ public class WallClimb : MonoBehaviour {
 
     [SerializeField]
     GameObject player;
+    [SerializeField]
+    Camera mainCam;
+    [SerializeField]
+    Camera climbCam;
+    [SerializeField]
+    Animator anim;
+    [SerializeField]
+    Rigidbody rb;
+    [SerializeField]
+    PlayerController playerController;
 
     //Ray emptyRay; // Hit above the wall to check for obstructions;
     //Ray ray; // Hit the wall in front to see if we are climbing
-    //RaycastHit hit = new RaycastHit();
     //RaycastHit hitempty = new RaycastHit();
+    RaycastHit hit = new RaycastHit();
     Vector3 checkLocation;
+    Vector3 eyePosition;
+    bool inAnimation = false;
+    public PhysicMaterial notWall;
+   
 
     bool isClimbed;
     	
 	// Update is called once per frame
 	void Update ()
     {
+        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1, Color.blue);
+        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1 + new Vector3(0, 1.5f, 0), Color.red);
         //Debug.Log(CanClimb());
-        if (Input.GetKey(KeyCode.W) && CanClimb())
+        if (Input.GetKey(KeyCode.W) && CanClimb() && !inAnimation)
         {
+            //mainCam.SetActive(false);
+            //climbCam.SetActive(true);
+            climbCam.depth = 1;
+            mainCam.depth = 0;
+            playerController.enabled = false;
+            //rb.isKinematic = true;
+            inAnimation = true;
+            anim.SetTrigger("Climb");
+            StartCoroutine(afterClimb());
             //Debug.Log(checkLocation.ToString());
-            player.transform.position += checkLocation;
+            //player.transform.position += checkLocation;
         }
+    }
+
+    IEnumerator afterClimb()
+    {
+        yield return new WaitForSeconds(1.5f);
+        //mainCam.SetActive(true);
+        //climbCam.SetActive(false);
+        mainCam.depth = 1;
+        climbCam.depth = 0;
+        playerController.enabled = true;
+        //rb.isKinematic = false;
+        player.transform.position = climbCam.transform.position - new Vector3(0,0.8f,0);
+        inAnimation = false;
+
     }
 
     bool CanClimb()
     {
         // checkLocation = Vector3.forward + new Vector3(0, 1, 0);
-
-        checkLocation = player.transform.forward + new Vector3(0, 1, 0);
+        eyePosition = player.transform.position + new Vector3(0, 1f, 0);
+        checkLocation = player.transform.forward + new Vector3(0, 1.5f, 0);
 
         //emptyRay = new Ray(player.transform.position, player.transform.TransformDirection(checkLocation));
         //Debug.DrawRay(player.transform.position, player.transform.TransformDirection(checkLocation), Color.red);
@@ -39,12 +78,14 @@ public class WallClimb : MonoBehaviour {
        // ray = new Ray(player.transform.position, player.transform.TransformDirection(Vector3.forward));
        // Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward), Color.blue);
 
-        Debug.DrawLine(player.transform.position, player.transform.forward * 1 + player.transform.position, Color.blue);
-        Debug.DrawLine(player.transform.position, player.transform.position + (player.transform.forward * 1 + new Vector3(0, 1, 0)), Color.red);
-
-        if (Physics.Linecast(player.transform.position, player.transform.forward * 1 + player.transform.position) && !Physics.Linecast(player.transform.position, player.transform.position + (player.transform.forward * 1 + new Vector3(0, 1, 0))))
+        if (Physics.Linecast(eyePosition, eyePosition + player.transform.forward * 1, out hit) && !Physics.Linecast(eyePosition, eyePosition + player.transform.forward * 1 + new Vector3(0, 1.5f, 0)))
         {
-            return true;
+            //Debug.Log(hit.collider.material.name.ToString());
+            //Debug.LogWarning(notWall.name.ToString());
+            if (hit.collider.material.name != notWall.name + " (Instance)")
+            {
+                return true;
+            }
         }
 
         return false;
