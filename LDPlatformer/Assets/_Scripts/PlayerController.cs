@@ -26,9 +26,11 @@ public class PlayerController : MonoBehaviour
     public float friction = 0.8f;
     public float jumpHeight = 2.0f;
     public float gravityMultiplier = 0.0f;
+    public bool stopSnapping = false;
     private bool jump = false;
     private bool jumped = false;
     private bool previouslyGrounded = false;
+    
 
     float offsetYaw = 0.0f;
     float offsetPitch = 0.0f;
@@ -56,6 +58,8 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector]
     public bool canWallRun;
+    [SerializeField]
+    WallRun wallRunScript;
 
     // Use this for initialization
     void Start()
@@ -71,12 +75,8 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Look();
 
-        runMode = Input.GetKey(KeyCode.LeftShift);        
-
-        if (!jump)
-        {
-            jump = Input.GetButtonDown("Jump");
-        }
+        runMode = Input.GetKey(KeyCode.LeftShift);    
+        jump = Input.GetButtonDown("Jump");
 
         if (controller.isGrounded)
         {
@@ -93,7 +93,25 @@ public class PlayerController : MonoBehaviour
         //    previouslyGrounded = false;
         //}
 
-        previouslyGrounded = controller.isGrounded;
+        //previouslyGrounded = controller.isGrounded;
+
+        if (jump && wallRunScript.isWallRunning)
+        {
+            move.y = jumpHeight;
+            if (wallRunScript.isWallRunningLeft)
+            {
+                move += transform.right * airControl * 10;
+            }
+            else
+            {
+                move -= transform.right * airControl * 10;
+            }
+            stopSnapping = true;
+        }
+        else
+        {
+            stopSnapping = false;
+        }
 
         controller.Move(move * Time.deltaTime);
 
@@ -152,7 +170,7 @@ public class PlayerController : MonoBehaviour
     void AirMove(float oldy)
     {
         move = controller.velocity;
-        move.y = 0;
+        //move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
         float movy = oldy + ((Physics.gravity.y / 80));
@@ -172,7 +190,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(gameObject.transform.position, wallNormal * -1, out stick, 1.0f))
         {
             //gameObject.transform.position += (gameObject.transform.position - stick.point) - new Vector3(controller.radius, 0, controller.radius);
-            gameObject.transform.position = stick.point + (wallNormal * (controller.radius + 0.1f));
+            gameObject.transform.position = stick.point + (wallNormal * (controller.radius + 0.05f));
         }
     }
 

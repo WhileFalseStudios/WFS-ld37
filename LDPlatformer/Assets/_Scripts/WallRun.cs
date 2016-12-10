@@ -28,7 +28,8 @@ public class WallRun : MonoBehaviour {
     //float wallRunGravity;
 
     //Ray ray;
-
+    public bool isWallRunning = false;
+    public bool isWallRunningLeft = false;
     RaycastHit hit = new RaycastHit();
 
     void Awake()
@@ -42,22 +43,21 @@ public class WallRun : MonoBehaviour {
         bool dLeft = DetectLeftWall(); //Better than raycasting 500 times per frame
         bool dRight = DetectRightWall();
 
+        playerController.gravityMultiplier = 0.0f;
+        isWallRunning = false;
+
         if (!(dRight && dLeft) && !characterController.isGrounded) //What the?
         {
             if ((dLeft || dRight) && runTime <= WallRunMaxTime)
             {
                 // Since there's no animation yet, I'm just putting them together
                 playerController.gravityMultiplier = 0.97f;
-                runTime += Time.deltaTime; //Doesnt work
+                //runTime += Time.deltaTime; //Doesnt work
 
-                playerController.StickToWall(hit.normal);                
-
+                playerController.StickToWall(hit.normal);
+                isWallRunning = true;
+                isWallRunningLeft = dLeft;
                 // BTW, this is my Unity Player Controller Setup: Walk 20, Run 40, Air Control 6, Terminal 20, Air Max 6, Friction 2, Jump Height 5, Gravity Multiplier 0
-            }
-            else
-            {
-                runTime = 0;
-                playerController.gravityMultiplier = 0.0f;
             }
         }
         //if (!characterController.isGrounded && Input.GetKeyDown(KeyCode.W))
