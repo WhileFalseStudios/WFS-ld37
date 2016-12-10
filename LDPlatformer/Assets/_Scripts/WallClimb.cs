@@ -10,19 +10,20 @@ public class WallClimb : MonoBehaviour {
     Ray emptyRay; // Hit above the wall to check for obstructions;
     Ray ray; // Hit the wall in front to see if we are climbing
     RaycastHit hit = new RaycastHit();
+    Vector3 checkLocation;
     	
 	// Update is called once per frame
 	void Update ()
     {
-        //if (Input.GetKey(KeyCode.W))
-        //{
-            CanClimb();
-        //}
+        if (Input.GetKey(KeyCode.W) && CanClimb())
+        {
+            player.transform.position += checkLocation;
+        }
     }
 
-    void CanClimb()
+    bool CanClimb()
     { 
-        Vector3 checkLocation = Vector3.forward + new Vector3(0, 3, 0);
+        checkLocation = Vector3.forward + new Vector3(0, 1, 0);
 
         emptyRay = new Ray(player.transform.position, player.transform.TransformDirection(checkLocation));
         Debug.DrawRay(player.transform.position, player.transform.TransformDirection(checkLocation), Color.red);
@@ -31,12 +32,14 @@ public class WallClimb : MonoBehaviour {
         ray = new Ray(player.transform.position, player.transform.TransformDirection(Vector3.forward));
         Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward), Color.blue);
 
-        if (Physics.Raycast(ray.origin, ray.direction, out hit, 1.0f))
+        if (Physics.Raycast(ray.origin, ray.direction, out hit, 1.0f)
+            && !Physics.Raycast(emptyRay.origin, emptyRay.direction, 1.0f))
         {
-            if (!Physics.Raycast(emptyRay.origin, emptyRay.direction, 1.0f))
+            if (hit.collider.tag == "Wall")
             {
-                Debug.Log("Can Climb");
+                return true;
             }
         }
+        return false;
     }
 }

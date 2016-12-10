@@ -9,8 +9,8 @@ public class WallRun : MonoBehaviour {
     GameObject player;
     [SerializeField]
     CharacterController characterController;
-    [SerializeField]
-    FirstPersonController firstPersonController;
+    //[SerializeField]
+    //FirstPersonController firstPersonController;
 
     float orginalGravity;
     float wallRunGravity;
@@ -20,15 +20,15 @@ public class WallRun : MonoBehaviour {
 
     void Awake()
     {
-        orginalGravity = firstPersonController.m_StickToGroundForce;
-        wallRunGravity = firstPersonController.m_StickToGroundForce * 0.1f;
+        //orginalGravity = firstPersonController.m_StickToGroundForce;
+        //wallRunGravity = firstPersonController.m_StickToGroundForce * 0.1f;
     }
 
     void Update()
     {
         //if (!characterController.isGrounded && Input.GetKeyDown(KeyCode.W))
         //{
-            if (Input.GetKey(KeyCode.A) && DetectLeftWall())
+            if (DetectLeftWall())
             {
                 WallRunLeft();
             }
@@ -58,6 +58,6 @@ public class WallRun : MonoBehaviour {
     void WallRunLeft()
     {
         // Do animation
-        firstPersonController.m_StickToGroundForce = wallRunGravity;
+        //firstPersonController.m_StickToGroundForce = wallRunGravity;
     }
 }
