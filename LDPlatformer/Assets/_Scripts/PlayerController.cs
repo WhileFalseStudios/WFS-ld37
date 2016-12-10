@@ -32,6 +32,8 @@ public class PlayerController : MonoBehaviour
 
     float offsetYaw = 0.0f;
     float offsetPitch = 0.0f;
+    float camRoll = 0.0f;
+    float curCamRoll = 0.0f;
     float fov = 90.0f;
 
     bool runMode = false;
@@ -67,6 +69,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        curCamRoll = Mathf.MoveTowardsAngle(curCamRoll, camRoll, Time.deltaTime * 30);
+
         velocity = transform.position - oldPos;
         Cursor.lockState = CursorLockMode.Locked;
         Look();
@@ -99,6 +103,11 @@ public class PlayerController : MonoBehaviour
 
         oldPos = transform.position;
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
         //if (!previouslyGrounded && controller.isGrounded)
         //{
         //    jump = false;
@@ -113,7 +122,7 @@ public class PlayerController : MonoBehaviour
     {
         gameObject.transform.Rotate(0, Input.GetAxis("Mouse X"), 0);
         offsetPitch = Mathf.Clamp(offsetPitch - Input.GetAxis("Mouse Y"), maxAimDown, maxAimUp);
-        view.transform.eulerAngles = new Vector3(offsetPitch, gameObject.transform.eulerAngles.y, 0);
+        view.transform.eulerAngles = new Vector3(offsetPitch, gameObject.transform.eulerAngles.y, curCamRoll);
     }
 
     void GroundMove(float oldy)
@@ -155,10 +164,10 @@ public class PlayerController : MonoBehaviour
         move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
-        float movy = oldy + ((Physics.gravity.y / 80));
+        float movy = oldy + ((Physics.gravity.y) * Time.deltaTime);
         if (movy < 0)
         {
-            movy -= ((Physics.gravity.y / 80)) * gravityMultiplier;
+            movy -= ((Physics.gravity.y) * Time.deltaTime) * gravityMultiplier;
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
@@ -190,6 +199,11 @@ public class PlayerController : MonoBehaviour
                 footstepTimer += Time.deltaTime;
             }
         }
+    }
+
+    public void CamTilt(float angle)
+    {
+        camRoll = angle;
     }
 
     void UpdateFOV()

@@ -15,6 +15,9 @@ public class WallRun : MonoBehaviour {
     private PlayerController playerController;
 
     [SerializeField]
+    Camera view;
+
+    [SerializeField]
     float WallRunMaxTime = 5.0f;
     float runTime;
 
@@ -50,15 +53,28 @@ public class WallRun : MonoBehaviour {
                 playerController.gravityMultiplier = 0.97f;
                 runTime += Time.deltaTime; //Doesnt work
 
-                playerController.StickToWall(hit.normal);                
+                playerController.StickToWall(hit.normal);
+                
+                if (dLeft)
+                {
+                    playerController.CamTilt(5.0f);
+                }
+                else if (dRight)
+                {
+                    playerController.CamTilt(-5.0f);
+                }        
 
                 // BTW, this is my Unity Player Controller Setup: Walk 20, Run 40, Air Control 6, Terminal 20, Air Max 6, Friction 2, Jump Height 5, Gravity Multiplier 0
             }
             else
             {
-                runTime = 0;
+                runTime = 0;                
                 playerController.gravityMultiplier = 0.0f;
             }
+        }
+        else
+        {
+            playerController.CamTilt(0.0f);
         }
         //if (!characterController.isGrounded && Input.GetKeyDown(KeyCode.W))
         //{
