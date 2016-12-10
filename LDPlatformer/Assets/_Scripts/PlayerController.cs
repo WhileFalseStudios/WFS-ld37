@@ -30,10 +30,13 @@ public class PlayerController : MonoBehaviour
     private bool jump = false;
     private bool jumped = false;
     private bool previouslyGrounded = false;
+    public float WallJumpSpeed = 30.0f;
     
 
     float offsetYaw = 0.0f;
     float offsetPitch = 0.0f;
+    float rollAngle = 0.0f;
+    float curRollAngle = 0.0f;
     float fov = 90.0f;
 
     bool runMode = false;
@@ -55,6 +58,9 @@ public class PlayerController : MonoBehaviour
     Vector3 oldPos;
 
     Vector3 velocity;
+
+    [SerializeField]
+    public float TiltSpeed = 30.0f;
 
     [HideInInspector]
     public bool canWallRun;
@@ -95,16 +101,23 @@ public class PlayerController : MonoBehaviour
 
         //previouslyGrounded = controller.isGrounded;
 
+        if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
+        {
+            wallRunScript.canWallRun = false;
+        }
+
         if (jump && wallRunScript.isWallRunning)
         {
             move.y = jumpHeight;
             if (wallRunScript.isWallRunningLeft)
             {
-                move += transform.right * airControl * 10;
+                move += transform.right * airControl * WallJumpSpeed;
+                wallRunScript.canWallRun = false;
             }
             else
             {
-                move -= transform.right * airControl * 10;
+                move -= transform.right * airControl * WallJumpSpeed;
+                wallRunScript.canWallRun = false;
             }
             stopSnapping = true;
         }
@@ -129,13 +142,15 @@ public class PlayerController : MonoBehaviour
 
     void Look()
     {
+        curRollAngle = Mathf.MoveTowardsAngle(curRollAngle, rollAngle, Time.deltaTime * TiltSpeed);
         gameObject.transform.Rotate(0, Input.GetAxis("Mouse X"), 0);
         offsetPitch = Mathf.Clamp(offsetPitch - Input.GetAxis("Mouse Y"), maxAimDown, maxAimUp);
-        view.transform.eulerAngles = new Vector3(offsetPitch, gameObject.transform.eulerAngles.y, 0);
+        view.transform.eulerAngles = new Vector3(offsetPitch, gameObject.transform.eulerAngles.y, curRollAngle);
     }
 
     void GroundMove(float oldy)
-    {       
+    {
+        wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
         if (jumped)
@@ -173,10 +188,10 @@ public class PlayerController : MonoBehaviour
         //move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
-        float movy = oldy + ((Physics.gravity.y / 80));
+        float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
         if (movy < 0)
         {
-            movy -= ((Physics.gravity.y / 80)) * gravityMultiplier;
+            movy -= ((Physics.gravity.y * Time.deltaTime)) * gravityMultiplier;
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
@@ -192,6 +207,11 @@ public class PlayerController : MonoBehaviour
             //gameObject.transform.position += (gameObject.transform.position - stick.point) - new Vector3(controller.radius, 0, controller.radius);
             gameObject.transform.position = stick.point + (wallNormal * (controller.radius + 0.05f));
         }
+    }
+
+    public void CamTilt(float angle)
+    {
+        rollAngle = angle;
     }
 
     void Footsteps()

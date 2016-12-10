@@ -15,9 +15,6 @@ public class WallRun : MonoBehaviour {
     private PlayerController playerController;
 
     [SerializeField]
-    Camera view;
-
-    [SerializeField]
     float WallRunMaxTime = 5.0f;
     float runTime;
 
@@ -30,9 +27,6 @@ public class WallRun : MonoBehaviour {
     //float orginalGravity;
     //float wallRunGravity;
 
-    public bool canWallRun = true;
-    public float wallRunTimer = 0.0f;
-
     //Ray ray;
     public bool isWallRunning = false;
     public bool isWallRunningLeft = false;
@@ -44,70 +38,27 @@ public class WallRun : MonoBehaviour {
         //wallRunGravity = firstPersonController.m_StickToGroundForce * 0.1f;
     }
 
-    void TickRunState()
-    {
-        isWallRunning = false;
-        playerController.CamTilt(0.0f);
-        playerController.gravityMultiplier = 0;
-        wallRunTimer += Time.deltaTime;
-        if (wallRunTimer >= 1.5f)
-        {
-            canWallRun = true;            
-            wallRunTimer = 0.0f;
-        }
-    }
-
     void Update()
     {
-        if (!canWallRun)
-        {
-            TickRunState();
-            return;
-        }
-        else
-        {
-            wallRunTimer = 0.0f;
-        }
-
         bool dLeft = DetectLeftWall(); //Better than raycasting 500 times per frame
         bool dRight = DetectRightWall();
 
         playerController.gravityMultiplier = 0.0f;
+        isWallRunning = false;
 
-        if (!(dRight && dLeft) && !characterController.isGrounded && canWallRun) //What the?
+        if (!(dRight && dLeft) && !characterController.isGrounded) //What the?
         {
             if ((dLeft || dRight) && runTime <= WallRunMaxTime)
             {
                 // Since there's no animation yet, I'm just putting them together
                 playerController.gravityMultiplier = 0.97f;
-                runTime += Time.deltaTime; //Doesnt work
+                //runTime += Time.deltaTime; //Doesnt work
 
                 playerController.StickToWall(hit.normal);
-
-                if (dLeft)
-                {
-                    playerController.CamTilt(5.0f);
-                }
-                else if (dRight)
-                {
-                    playerController.CamTilt(-5.0f);
-                }
-                //runTime += Time.deltaTime; //Doesnt work
                 isWallRunning = true;
                 isWallRunningLeft = dLeft;
                 // BTW, this is my Unity Player Controller Setup: Walk 20, Run 40, Air Control 6, Terminal 20, Air Max 6, Friction 2, Jump Height 5, Gravity Multiplier 0
             }
-            else
-            {
-                runTime = 0;
-                playerController.gravityMultiplier = 0.0f;
-            }
-        }
-
-        else
-        {
-            isWallRunning = false;
-            playerController.CamTilt(0.0f);
         }
         //if (!characterController.isGrounded && Input.GetKeyDown(KeyCode.W))
         //{
