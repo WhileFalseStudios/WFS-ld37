@@ -101,29 +101,33 @@ public class PlayerController : MonoBehaviour
 
         //previouslyGrounded = controller.isGrounded;
 
-        if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
+        if (wallRunScript != null)
         {
-            wallRunScript.canWallRun = false;
-        }
 
-        if (jump && wallRunScript.isWallRunning)
-        {
-            move.y = jumpHeight;
-            if (wallRunScript.isWallRunningLeft)
+            if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
             {
-                move += transform.right * airControl * WallJumpSpeed;
                 wallRunScript.canWallRun = false;
+            }
+
+            if (jump && wallRunScript.isWallRunning)
+            {
+                move.y = jumpHeight;
+                if (wallRunScript.isWallRunningLeft)
+                {
+                    move += transform.right * airControl * WallJumpSpeed;
+                    wallRunScript.canWallRun = false;
+                }
+                else
+                {
+                    move -= transform.right * airControl * WallJumpSpeed;
+                    wallRunScript.canWallRun = false;
+                }
+                stopSnapping = true;
             }
             else
             {
-                move -= transform.right * airControl * WallJumpSpeed;
-                wallRunScript.canWallRun = false;
+                stopSnapping = false;
             }
-            stopSnapping = true;
-        }
-        else
-        {
-            stopSnapping = false;
         }
 
         controller.Move(move * Time.deltaTime);
@@ -150,7 +154,9 @@ public class PlayerController : MonoBehaviour
 
     void GroundMove(float oldy)
     {
-        wallRunScript.canWallRun = true;
+        if (wallRunScript != null)
+            wallRunScript.canWallRun = true;
+
         move = controller.velocity;
         move /= friction;
         if (jumped)
