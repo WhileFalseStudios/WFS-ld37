@@ -59,13 +59,22 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         Cursor.lockState = CursorLockMode.Locked;
         Look();
 
         runMode = Input.GetKey(KeyCode.LeftShift);
 
         controller.Move(move * Time.deltaTime);
+
+        if (!jump)
+        {
+            jump = Input.GetButtonDown("Jump");
+            if (jump)
+            {
+                Debug.LogWarning(runMode.ToString());
+                Debug.LogError(controller.isGrounded.ToString());
+            }
+        }
 
         if (controller.isGrounded)
         {
@@ -74,7 +83,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             AirMove(move.y);
-            jump = false;
+            //jump = false;
         }
 
         //if (!previouslyGrounded && controller.isGrounded)
@@ -84,12 +93,7 @@ public class PlayerController : MonoBehaviour
         //    move.y = 0;
         //}
 
-        if (!jump)
-        {
-            jump = Input.GetButtonDown("Jump");
-        }
-
-        previouslyGrounded = controller.isGrounded;
+        //previouslyGrounded = controller.isGrounded;
     }
 
     void Look()
@@ -103,10 +107,15 @@ public class PlayerController : MonoBehaviour
     {
         move = controller.velocity;
         move /= friction;
+        if (jumped)
+        {
+            jump = false;
+            jumped = false;
+        }
+
         if (jump)
         {
-            //jumped = true;
-            jump = false;
+            jumped = true;
             move.y = jumpHeight;
         }
         else
