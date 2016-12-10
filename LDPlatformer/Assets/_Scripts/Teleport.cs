@@ -6,34 +6,27 @@ public class Teleport : MonoBehaviour {
 
     [SerializeField]
     GameObject[] spawnPoints = new GameObject[2];
-
     [SerializeField]
     GameObject player;
-
     int currentRoom = 0;
 
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            TeleportToRoom(0);
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            TeleportToRoom(1);
+            TeleportToRoom();
         }
 	}
 
-    void TeleportToRoom(int roomNumber)
+    void TeleportToRoom()
     {
-        if (currentRoom == roomNumber)
-        {
-            return;
-            // Fizzes
-        }
-
+        int roomNumber = 1 - currentRoom;
         Vector3 relativeLocation = spawnPoints[currentRoom].transform.InverseTransformPoint(player.transform.position);
         player.transform.position = spawnPoints[roomNumber].transform.position + relativeLocation;
-
         currentRoom = roomNumber;
+    }
+
+    void OnCollisionEnter()
+    {
+        Debug.Log("DED");
     }
 }
