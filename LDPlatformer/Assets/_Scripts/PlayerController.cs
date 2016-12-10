@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     public float airSpeedMax = 3.0f;
     public float friction = 0.8f;
     public float jumpHeight = 2.0f;
+    public float gravityMultiplier = 0.0f;
     private bool jump = false;
     private bool jumped = false;
     private bool previouslyGrounded = false;
@@ -69,11 +70,6 @@ public class PlayerController : MonoBehaviour
         if (!jump)
         {
             jump = Input.GetButtonDown("Jump");
-            if (jump)
-            {
-                Debug.LogWarning(runMode.ToString());
-                Debug.LogError(controller.isGrounded.ToString());
-            }
         }
 
         if (controller.isGrounded)
@@ -134,6 +130,11 @@ public class PlayerController : MonoBehaviour
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
         float movy = oldy + ((Physics.gravity.y / 80));
+        if (movy < 0)
+        {
+            movy -= ((Physics.gravity.y / 80)) * gravityMultiplier;
+            // Only slow down when falling, this is controlled in wallrun.
+        }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
     }
 
