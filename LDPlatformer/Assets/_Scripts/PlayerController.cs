@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 2.0f;
     private bool jump = false;
     private bool jumped = false;
+    private bool previouslyGrounded = false;
 
     float offsetYaw = 0.0f;
     float offsetPitch = 0.0f;
@@ -51,17 +52,13 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        view.transform.localPosition = new Vector3(0, cameraOffset, 0);
+        //view.transform.localPosition = new Vector3(0, cameraOffset, 0);
         UpdateFOV();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!jump)
-        {
-            jump = Input.GetButtonDown("Jump");
-        }
 
         Cursor.lockState = CursorLockMode.Locked;
         Look();
@@ -73,12 +70,26 @@ public class PlayerController : MonoBehaviour
         if (controller.isGrounded)
         {
             GroundMove();
-            jump = false;
         }
         else
         {
             AirMove(move.y);
+            jump = false;
         }
+
+        //if (!previouslyGrounded && controller.isGrounded)
+        //{
+        //    jump = false;
+        //    //jumped = false;
+        //    move.y = 0;
+        //}
+
+        if (!jump)
+        {
+            jump = Input.GetButtonDown("Jump");
+        }
+
+        previouslyGrounded = controller.isGrounded;
     }
 
     void Look()
@@ -95,6 +106,7 @@ public class PlayerController : MonoBehaviour
         if (jump)
         {
             //jumped = true;
+            jump = false;
             move.y = jumpHeight;
         }
         else
