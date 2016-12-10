@@ -19,7 +19,7 @@ public class WallClimb : MonoBehaviour {
 	void Update ()
     {
         //Debug.Log(CanClimb());
-        if (Input.GetKey(KeyCode.W) && CanClimb())
+        if (CanClimb())
         {
             //Debug.Log(checkLocation.ToString());
             player.transform.position += checkLocation;
