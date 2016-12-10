@@ -12,8 +12,8 @@ public class WallClimb : MonoBehaviour {
     Camera climbCam;
     [SerializeField]
     Animator anim;
-    [SerializeField]
-    Rigidbody rb;
+    //[SerializeField]
+    //Rigidbody rb;
     [SerializeField]
     PlayerController playerController;
 
@@ -32,8 +32,6 @@ public class WallClimb : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1, Color.blue);
-        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1 + new Vector3(0, 1.5f, 0), Color.red);
         //Debug.Log(CanClimb());
         if (Input.GetKey(KeyCode.W) && CanClimb() && !inAnimation)
         {
@@ -53,7 +51,7 @@ public class WallClimb : MonoBehaviour {
 
     IEnumerator afterClimb()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         //mainCam.SetActive(true);
         //climbCam.SetActive(false);
         mainCam.depth = 1;
@@ -75,8 +73,10 @@ public class WallClimb : MonoBehaviour {
         //Debug.DrawRay(player.transform.position, player.transform.TransformDirection(checkLocation), Color.red);
 
 
-       // ray = new Ray(player.transform.position, player.transform.TransformDirection(Vector3.forward));
-       // Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward), Color.blue);
+        // ray = new Ray(player.transform.position, player.transform.TransformDirection(Vector3.forward));
+        // Debug.DrawRay(player.transform.position, player.transform.TransformDirection(Vector3.forward), Color.blue);
+        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1, Color.blue);
+        Debug.DrawLine(eyePosition, eyePosition + player.transform.forward * 1 + new Vector3(0, 1.5f, 0), Color.red);
 
         if (Physics.Linecast(eyePosition, eyePosition + player.transform.forward * 1, out hit) && !Physics.Linecast(eyePosition, eyePosition + player.transform.forward * 1 + new Vector3(0, 1.5f, 0)))
         {
