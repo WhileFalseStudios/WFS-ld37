@@ -42,7 +42,7 @@ public class WallRun : MonoBehaviour {
         bool dLeft = DetectLeftWall(); //Better than raycasting 500 times per frame
         bool dRight = DetectRightWall();
 
-        if (!(dRight && dLeft)) //What the?
+        if (!(dRight && dLeft) && !characterController.isGrounded) //What the?
         {
             if ((dLeft || dRight) && runTime <= WallRunMaxTime)
             {

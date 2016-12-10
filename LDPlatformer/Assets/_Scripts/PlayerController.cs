@@ -54,6 +54,9 @@ public class PlayerController : MonoBehaviour
 
     Vector3 velocity;
 
+    [HideInInspector]
+    public bool canWallRun;
+
     // Use this for initialization
     void Start()
     {
@@ -68,9 +71,7 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Look();
 
-        runMode = Input.GetKey(KeyCode.LeftShift);
-
-        controller.Move(move * Time.deltaTime);
+        runMode = Input.GetKey(KeyCode.LeftShift);        
 
         if (!jump)
         {
@@ -79,14 +80,23 @@ public class PlayerController : MonoBehaviour
 
         if (controller.isGrounded)
         {
-            GroundMove();
+            GroundMove(move.y);
         }
         else
         {
             AirMove(move.y);
             //jump = false;
         }
-                
+
+        //if (!previouslyGrounded && controller.isGrounded)
+        //{
+        //    previouslyGrounded = false;
+        //}
+
+        previouslyGrounded = controller.isGrounded;
+
+        controller.Move(move * Time.deltaTime);
+
         oldPos = transform.position;
 
         //if (!previouslyGrounded && controller.isGrounded)
@@ -106,25 +116,34 @@ public class PlayerController : MonoBehaviour
         view.transform.eulerAngles = new Vector3(offsetPitch, gameObject.transform.eulerAngles.y, 0);
     }
 
-    void GroundMove()
-    {
+    void GroundMove(float oldy)
+    {       
         move = controller.velocity;
         move /= friction;
         if (jumped)
         {
             jump = false;
             jumped = false;
+            canWallRun = true;
         }
+
+        canWallRun = false;
 
         if (jump)
         {
             jumped = true;
+
+            previouslyGrounded = true;
+
             move.y = jumpHeight;
         }
         else
         {
-            move.y = 0;
+            // move.y = 0;       
+            float movy = oldy + ((Physics.gravity.y / 80));
+            move.y = movy;
         }
+                    
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * (moveSpeed * 0.2f);
         move = Vector3.ClampMagnitude(move, moveSpeed);
         //Footsteps();   
