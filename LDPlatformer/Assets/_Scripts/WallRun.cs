@@ -38,6 +38,9 @@ public class WallRun : MonoBehaviour {
     public bool isWallRunningLeft = false;
     RaycastHit hit = new RaycastHit();
 
+    Vector3 lastWallNormal = new Vector3(0,0,0);
+    //GameObject lastWall = null;
+
     void Awake()
     {
         //orginalGravity = firstPersonController.m_StickToGroundForce;
@@ -78,7 +81,11 @@ public class WallRun : MonoBehaviour {
         {
             if ((dLeft || dRight) && runTime <= WallRunMaxTime)
             {
-                // Since there's no animation yet, I'm just putting them together
+                if (Input.GetKeyDown(KeyCode.LeftControl))
+                {
+                    canWallRun = false;
+                }
+
                 playerController.gravityMultiplier = 0.97f;
                 runTime += Time.deltaTime; //Doesnt work
 
@@ -86,10 +93,18 @@ public class WallRun : MonoBehaviour {
 
                 if (dLeft)
                 {
+                    if (Input.GetKeyDown(KeyCode.D))
+                    {
+                        canWallRun = false;
+                    }
                     playerController.CamTilt(5.0f);
                 }
                 else if (dRight)
                 {
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        canWallRun = false;
+                    }
                     playerController.CamTilt(-5.0f);
                 }
                 //runTime += Time.deltaTime; //Doesnt work

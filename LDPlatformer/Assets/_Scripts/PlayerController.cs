@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            Debug.LogError(move.y);
+            //Debug.LogError(move.y);
             AirMove(move.y);
             //jump = false;
         }
@@ -102,11 +102,6 @@ public class PlayerController : MonoBehaviour
         //}
 
         //previouslyGrounded = controller.isGrounded;
-
-        if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
-        {
-            wallRunScript.canWallRun = false;
-        }
 
         if (jump && wallRunScript.isWallRunning)
         {
