@@ -179,7 +179,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             // move.y = 0;       
-            float movy = oldy + ((Physics.gravity.y / 80));
+            float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
             move.y = movy;
         }
                     
