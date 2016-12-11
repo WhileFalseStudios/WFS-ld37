@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
     bool runMode = false;
 
-    Vector3 move;
+    public Vector3 move;
 
     float footstepTimer = 0.0f;
 
