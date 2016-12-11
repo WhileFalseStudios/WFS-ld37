@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour
     {
         //view.transform.localPosition = new Vector3(0, cameraOffset, 0);
         UpdateFOV();
+        Application.targetFrameRate = 60;
     }
 
     void FixedUpdate()
@@ -164,7 +165,11 @@ public class PlayerController : MonoBehaviour
         if (jumped)
         {
             jump = false;
+<<<<<<< HEAD
             jumped = false;
+=======
+            jumped = false;            
+>>>>>>> origin/master
             canWallRun = true;
         }
 
