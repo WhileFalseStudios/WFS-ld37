@@ -28,8 +28,8 @@ public class PlayerController : MonoBehaviour
     public float gravityMultiplier = 0.0f;
     public bool stopSnapping = false;
     public bool doubleJumped = false;
-    private bool jump = false;
-    private bool jumped = false;
+    public bool jump = false;
+    //private bool jumped = false;
     private bool previouslyGrounded = false;
     public float WallJumpSpeed = 30.0f;
 
@@ -80,18 +80,37 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        //previouslyGrounded = controller.isGrounded;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
         //Debug.LogWarning("Previous: " + previouslyGrounded.ToString());
         //Debug.LogError("Is Grounded: " + controller.isGrounded.ToString());
+
+        Cursor.lockState = CursorLockMode.Locked; // HACK
+        Look();
+
+        runMode = Input.GetKey(KeyCode.LeftShift);    
+        jump = Input.GetButtonDown("Jump");
+
+        oldPos = transform.position;
         if ((!controller.isGrounded && previouslyGrounded)
             || (controller.isGrounded && !previouslyGrounded))
         {
             jump = false;
             doubleJumped = false;
         }
-
         previouslyGrounded = controller.isGrounded;
 
-
+        //if (!previouslyGrounded && controller.isGrounded)
+        //{
+        //    jump = false;
+        //    //jumped = false;
+        //    move.y = 0;
+        //}
         velocity = transform.position - oldPos;
 
         if (controller.isGrounded)
@@ -125,28 +144,7 @@ public class PlayerController : MonoBehaviour
             stopSnapping = false;
         }
 
-        controller.Move(move * Time.fixedDeltaTime);
-
-        oldPos = transform.position;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Cursor.lockState = CursorLockMode.Locked; // HACK
-        Look();
-
-        runMode = Input.GetKey(KeyCode.LeftShift);    
-        jump = Input.GetButtonDown("Jump");
-
-        //if (!previouslyGrounded && controller.isGrounded)
-        //{
-        //    jump = false;
-        //    //jumped = false;
-        //    move.y = 0;
-        //}
-
-        //previouslyGrounded = controller.isGrounded;
+        controller.Move(move * Time.deltaTime);
     }
 
     void Look()
@@ -172,7 +170,7 @@ public class PlayerController : MonoBehaviour
         {
             // move.y = 0;       
             // float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
-            move.y = ((Physics.gravity.y * Time.fixedDeltaTime));
+            move.y = ((Physics.gravity.y * Time.deltaTime));
         }
                     
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * (moveSpeed * 0.2f);
@@ -199,10 +197,10 @@ public class PlayerController : MonoBehaviour
         //move.x = Mathf.Min(move.x, airSpeedMax);
         //move.z = Mathf.Min(move.z, airSpeedMax);
         //move = Vector3.ClampMagnitude(move, airSpeedMax);
-        float movy = oldy + ((Physics.gravity.y * Time.fixedDeltaTime));
+        float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
         if (movy < 0)
         {
-            movy -= ((Physics.gravity.y * Time.fixedDeltaTime)) * gravityMultiplier;
+            movy -= ((Physics.gravity.y * Time.deltaTime)) * gravityMultiplier;
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
@@ -240,7 +238,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                footstepTimer += Time.fixedDeltaTime;
+                footstepTimer += Time.deltaTime;
             }
         }
     }
