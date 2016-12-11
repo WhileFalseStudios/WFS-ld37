@@ -68,11 +68,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     WallRun wallRunScript;
 
-    //void Awake()
-    //{
-    //    Application.targetFrameRate = 60;
-    //}
-
     // Use this for initialization
     void Start()
     {
@@ -81,9 +76,15 @@ public class PlayerController : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    void FixedUpdate()
+    // Update is called once per frame
+    void Update()
     {
         velocity = transform.position - oldPos;
+        Cursor.lockState = CursorLockMode.Locked;
+        Look();
+
+        runMode = Input.GetKey(KeyCode.LeftShift);    
+        jump = Input.GetButtonDown("Jump");
 
         if (controller.isGrounded)
         {
@@ -95,6 +96,13 @@ public class PlayerController : MonoBehaviour
             AirMove(move.y);
             //jump = false;
         }
+
+        //if (!previouslyGrounded && controller.isGrounded)
+        //{
+        //    previouslyGrounded = false;
+        //}
+
+        //previouslyGrounded = controller.isGrounded;
 
         if (jump && wallRunScript.isWallRunning)
         {
@@ -116,26 +124,9 @@ public class PlayerController : MonoBehaviour
             stopSnapping = false;
         }
 
-        controller.Move(move * Time.fixedDeltaTime);
+        controller.Move(move * Time.deltaTime);
 
         oldPos = transform.position;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Cursor.lockState = CursorLockMode.Locked; // HACK
-        Look();
-
-        runMode = Input.GetKey(KeyCode.LeftShift);    
-        jump = Input.GetButtonDown("Jump");
-
-        //if (!previouslyGrounded && controller.isGrounded)
-        //{
-        //    previouslyGrounded = false;
-        //}
-
-        //previouslyGrounded = controller.isGrounded;
 
         //if (!previouslyGrounded && controller.isGrounded)
         //{
@@ -161,15 +152,18 @@ public class PlayerController : MonoBehaviour
         wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
-        doubleJumped = false;
         if (jumped)
         {
             jump = false;
 <<<<<<< HEAD
             jumped = false;
+<<<<<<< HEAD
 =======
             jumped = false;            
 >>>>>>> origin/master
+=======
+            doubleJumped = false;
+>>>>>>> parent of 4ac6510... Fixed Falling and Teleport
             canWallRun = true;
         }
 
@@ -186,7 +180,7 @@ public class PlayerController : MonoBehaviour
         {
             // move.y = 0;       
             // float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
-            move.y = ((Physics.gravity.y * Time.fixedDeltaTime));
+            move.y = ((Physics.gravity.y * Time.deltaTime));
         }
                     
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * (moveSpeed * 0.2f);
@@ -202,29 +196,18 @@ public class PlayerController : MonoBehaviour
             oldy += jumpHeight * 1.5f;
             doubleJumped = true;
         }
-        if (controller.velocity.y < 0.1f && controller.velocity.y > -0.1f && oldy > 0.0f)
-        {
-            oldy = 0.0f;
-        }
 
         //move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
-        //Debug.LogError(move);
-        //move.x = Mathf.Min(move.x, airSpeedMax);
-        //move.z = Mathf.Min(move.z, airSpeedMax);
-        //move = Vector3.ClampMagnitude(move, airSpeedMax);
-        float movy = oldy + ((Physics.gravity.y * Time.fixedDeltaTime));
+        move = Vector3.ClampMagnitude(move, airSpeedMax);
+        float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
         if (movy < 0)
         {
-            movy -= ((Physics.gravity.y * Time.fixedDeltaTime)) * gravityMultiplier;
+            movy -= ((Physics.gravity.y * Time.deltaTime)) * gravityMultiplier;
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
-        move.x = Mathf.Clamp(move.x, -airSpeedMax, airSpeedMax);
-        move.z = Mathf.Clamp(move.z, -airSpeedMax, airSpeedMax);
-        //Debug.LogWarning(move);
     }
-    //Debug.LogWarning(move);
 
     public void StickToWall(Vector3 wallNormal)
     {
@@ -254,7 +237,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                footstepTimer += Time.fixedDeltaTime;
+                footstepTimer += Time.deltaTime;
             }
         }
     }

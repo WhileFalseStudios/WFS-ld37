@@ -16,8 +16,7 @@ public class WallClimb : MonoBehaviour {
     //Rigidbody rb;
     [SerializeField]
     PlayerController playerController;
-    [SerializeField]
-    Teleport teleport;
+
     //Ray emptyRay; // Hit above the wall to check for obstructions;
     //Ray ray; // Hit the wall in front to see if we are climbing
     //RaycastHit hitempty = new RaycastHit();
@@ -47,7 +46,6 @@ public class WallClimb : MonoBehaviour {
             inAnimation = true;
             anim.SetTrigger("Climb");
             StartCoroutine(afterClimb());
-            teleport.canTeleport = false;
             //Debug.Log(checkLocation.ToString());
             //player.transform.position += checkLocation;
         }
@@ -64,7 +62,6 @@ public class WallClimb : MonoBehaviour {
         mainCam.depth = 1;
         climbCam.depth = 0;
         playerController.enabled = true;
-        teleport.canTeleport = true;
         //Debug.Log(mainCam.transform.eulerAngles.ToString());
         //Debug.LogWarning(mainCam.transform.rotation.ToString());
         //mainCam.transform.localEulerAngles = new Vector3(0, 0, 0);
