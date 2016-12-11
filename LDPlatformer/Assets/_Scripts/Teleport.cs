@@ -9,9 +9,10 @@ public class Teleport : MonoBehaviour {
     [SerializeField]
     GameObject player;
     int currentRoom = 0;
+    public bool canTeleport = true;
 
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.Q) && canTeleport)
         {
             TeleportToRoom();
         }
