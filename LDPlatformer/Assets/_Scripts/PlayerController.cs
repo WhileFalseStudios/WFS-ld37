@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Properties")]
     public float baseWalkSpeed = 1.0f;
     public float baseRunSpeed = 2.5f;
-    public float airControl = 1.0f;
+    //public float airControl = 1.0f;
     public float terminalVelocity = 6.0f;
     public float airSpeedMax = 3.0f;
     public float friction = 0.8f;
@@ -129,12 +129,12 @@ public class PlayerController : MonoBehaviour
             move.y = jumpHeight;
             if (wallRunScript.isWallRunningLeft)
             {
-                move += transform.right * airControl * WallJumpSpeed;
+                move += transform.right * WallJumpSpeed * 0.3f; // You can replace this by changing the wall jump speed to 1/3, but not trying to break anything, I'm just putting this here.
                 wallRunScript.canWallRun = false;
             }
             else
             {
-                move -= transform.right * airControl * WallJumpSpeed;
+                move -= transform.right * WallJumpSpeed * 0.3f;
                 wallRunScript.canWallRun = false;
             }
             stopSnapping = true;
@@ -192,11 +192,11 @@ public class PlayerController : MonoBehaviour
         }
 
         //move.y = 0;
-        move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
+        move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal") ).normalized;
         //Debug.LogError(move);
         //move.x = Mathf.Min(move.x, airSpeedMax);
         //move.z = Mathf.Min(move.z, airSpeedMax);
-        //move = Vector3.ClampMagnitude(move, airSpeedMax);
+        move = Vector3.ClampMagnitude(move, airSpeedMax);
         float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
         if (movy < 0)
         {
@@ -204,8 +204,9 @@ public class PlayerController : MonoBehaviour
             // Only slow down when falling, this is controlled in wallrun.
         }
         move.y = Mathf.Clamp(movy, -terminalVelocity, terminalVelocity);
-        move.x = Mathf.Clamp(move.x, -airSpeedMax, airSpeedMax);
-        move.z = Mathf.Clamp(move.z, -airSpeedMax, airSpeedMax);
+        //Debug.Log((gameObject.transform.forward * Input.GetAxis("Vertical")+ gameObject.transform.right * Input.GetAxis("Horizontal")).normalized);
+        //move.x = Mathf.Clamp(move.x, -airSpeedMax, airSpeedMax);
+        //move.z = Mathf.Clamp(move.z, -airSpeedMax, airSpeedMax);
         //Debug.LogWarning(move);
     }
     //Debug.LogWarning(move);

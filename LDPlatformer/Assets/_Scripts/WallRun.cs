@@ -168,7 +168,7 @@ public class WallRun : MonoBehaviour {
 
         if (Physics.Linecast(player.transform.position, player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
-            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal)
+            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal && hit.collider.tag != "Climb Override")
             {
                 lastWallNormal = new Vector3(0,0,0);
                 return true;
@@ -183,7 +183,7 @@ public class WallRun : MonoBehaviour {
 
         if (Physics.Linecast(player.transform.position, -player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
-            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal)
+            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal && hit.collider.tag != "Climb Override")
             {
                 lastWallNormal = new Vector3(0,0,0);
                 return true;
