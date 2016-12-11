@@ -38,7 +38,7 @@ public class WallRun : MonoBehaviour {
     public bool isWallRunningLeft = false;
     RaycastHit hit = new RaycastHit();
 
-    Vector3 lastWallNormal = new Vector3(0,0,0);
+    public Vector3 lastWallNormal = new Vector3(0,0,0);
     //GameObject lastWall = null;
 
     void Awake()
@@ -49,13 +49,14 @@ public class WallRun : MonoBehaviour {
 
     void TickRunState()
     {
+        lastWallNormal = hit.normal;
         isWallRunning = false;
         playerController.CamTilt(0.0f);
         playerController.gravityMultiplier = 0;
         wallRunTimer += Time.deltaTime;
-        if (wallRunTimer >= 1.5f)
+        if (wallRunTimer >= 0.3f)
         {
-            canWallRun = true;            
+            canWallRun = true;          
             wallRunTimer = 0.0f;
         }
     }
@@ -110,6 +111,7 @@ public class WallRun : MonoBehaviour {
                 //runTime += Time.deltaTime; //Doesnt work
                 isWallRunning = true;
                 isWallRunningLeft = dLeft;
+                playerController.doubleJumped = false;
                 // BTW, this is my Unity Player Controller Setup: Walk 20, Run 40, Air Control 6, Terminal 20, Air Max 6, Friction 2, Jump Height 5, Gravity Multiplier 0
             }
             else
@@ -165,8 +167,9 @@ public class WallRun : MonoBehaviour {
 
         if (Physics.Linecast(player.transform.position, player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
-            if (hit.collider.material.name != notWall.name + " (Instance)")
+            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal)
             {
+                lastWallNormal = new Vector3(0,0,0);
                 return true;
             }
         }
@@ -179,8 +182,9 @@ public class WallRun : MonoBehaviour {
 
         if (Physics.Linecast(player.transform.position, -player.transform.right * WallRunDistance + player.transform.position, out hit))
         {
-            if (hit.collider.material.name != notWall.name + " (Instance)")
+            if (hit.collider.material.name != notWall.name + " (Instance)" && hit.normal != lastWallNormal)
             {
+                lastWallNormal = new Vector3(0,0,0);
                 return true;
             }
         }

@@ -27,9 +27,9 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 2.0f;
     public float gravityMultiplier = 0.0f;
     public bool stopSnapping = false;
+    public bool doubleJumped = false;
     private bool jump = false;
     private bool jumped = false;
-    private bool doubleJumped = false;
     private bool previouslyGrounded = false;
     public float WallJumpSpeed = 30.0f;
 
@@ -147,6 +147,7 @@ public class PlayerController : MonoBehaviour
 
     void GroundMove(float oldy)
     {
+        wallRunScript.lastWallNormal = new Vector3(0, 0, 0);
         wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
