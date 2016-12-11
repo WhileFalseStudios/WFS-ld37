@@ -29,12 +29,13 @@ public class PlayerController : MonoBehaviour
     public bool stopSnapping = false;
     private bool jump = false;
     private bool jumped = false;
+    private bool doubleJumped = false;
     private bool previouslyGrounded = false;
     public float WallJumpSpeed = 30.0f;
-    
 
+
+    public float offsetPitch = 0.0f;
     float offsetYaw = 0.0f;
-    float offsetPitch = 0.0f;
     float rollAngle = 0.0f;
     float curRollAngle = 0.0f;
     float fov = 90.0f;
@@ -101,33 +102,29 @@ public class PlayerController : MonoBehaviour
 
         //previouslyGrounded = controller.isGrounded;
 
-        if (wallRunScript != null)
+        if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
         {
+            wallRunScript.canWallRun = false;
+        }
 
-            if (Input.GetKeyDown(KeyCode.LeftControl) && wallRunScript.isWallRunning)
+        if (jump && wallRunScript.isWallRunning)
+        {
+            move.y = jumpHeight;
+            if (wallRunScript.isWallRunningLeft)
             {
+                move += transform.right * airControl * WallJumpSpeed;
                 wallRunScript.canWallRun = false;
-            }
-
-            if (jump && wallRunScript.isWallRunning)
-            {
-                move.y = jumpHeight;
-                if (wallRunScript.isWallRunningLeft)
-                {
-                    move += transform.right * airControl * WallJumpSpeed;
-                    wallRunScript.canWallRun = false;
-                }
-                else
-                {
-                    move -= transform.right * airControl * WallJumpSpeed;
-                    wallRunScript.canWallRun = false;
-                }
-                stopSnapping = true;
             }
             else
             {
-                stopSnapping = false;
+                move -= transform.right * airControl * WallJumpSpeed;
+                wallRunScript.canWallRun = false;
             }
+            stopSnapping = true;
+        }
+        else
+        {
+            stopSnapping = false;
         }
 
         controller.Move(move * Time.deltaTime);
@@ -154,15 +151,14 @@ public class PlayerController : MonoBehaviour
 
     void GroundMove(float oldy)
     {
-        if (wallRunScript != null)
-            wallRunScript.canWallRun = true;
-
+        wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
         if (jumped)
         {
             jump = false;
             jumped = false;
+            doubleJumped = false;
             canWallRun = true;
         }
 
@@ -171,9 +167,8 @@ public class PlayerController : MonoBehaviour
         if (jump)
         {
             jumped = true;
-
+            jump = false;
             previouslyGrounded = true;
-
             move.y = jumpHeight;
         }
         else
@@ -191,6 +186,12 @@ public class PlayerController : MonoBehaviour
     void AirMove(float oldy)
     {
         move = controller.velocity;
+        if (jump && !wallRunScript.isWallRunning && !doubleJumped)
+        {
+            oldy += jumpHeight * 2;
+            doubleJumped = true;
+        }
+
         //move.y = 0;
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * airControl;
         move = Vector3.ClampMagnitude(move, airSpeedMax);
