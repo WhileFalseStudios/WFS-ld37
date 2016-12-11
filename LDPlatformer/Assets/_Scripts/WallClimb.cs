@@ -39,6 +39,8 @@ public class WallClimb : MonoBehaviour {
             //climbCam.SetActive(true);
             climbCam.depth = 1;
             mainCam.depth = 0;
+            //mainCam.transform.eulerAngles = new Vector3(0.0f, mainCam.transform.rotation.y, mainCam.transform.rotation.z);
+            //playerController.offsetPitch = 0.0f;
             playerController.enabled = false;
             //rb.isKinematic = true;
             inAnimation = true;
@@ -54,11 +56,18 @@ public class WallClimb : MonoBehaviour {
         yield return new WaitForSeconds(1f);
         //mainCam.SetActive(true);
         //climbCam.SetActive(false);
+        player.transform.position = climbCam.transform.position - new Vector3(0, 0.5f, 0);
+        //playerController.offsetPitch = 0.0f;
+        //mainCam.transform.eulerAngles = new Vector3(0.0f, mainCam.transform.rotation.y, mainCam.transform.rotation.z);
         mainCam.depth = 1;
         climbCam.depth = 0;
         playerController.enabled = true;
+        //Debug.Log(mainCam.transform.eulerAngles.ToString());
+        //Debug.LogWarning(mainCam.transform.rotation.ToString());
+        //mainCam.transform.localEulerAngles = new Vector3(0, 0, 0);
+        //Debug.Log(mainCam.transform.eulerAngles.ToString());
+        //Debug.LogWarning(mainCam.transform.rotation.ToString());
         //rb.isKinematic = false;
-        player.transform.position = climbCam.transform.position - new Vector3(0,0.8f,0);
         inAnimation = false;
 
     }
@@ -66,7 +75,7 @@ public class WallClimb : MonoBehaviour {
     bool CanClimb()
     {
         // checkLocation = Vector3.forward + new Vector3(0, 1, 0);
-        eyePosition = player.transform.position + new Vector3(0, 1f, 0);
+        eyePosition = player.transform.position + new Vector3(0, 0.5f, 0);
         checkLocation = player.transform.forward + new Vector3(0, 1.5f, 0);
 
         //emptyRay = new Ray(player.transform.position, player.transform.TransformDirection(checkLocation));
