@@ -73,6 +73,7 @@ public class PlayerController : MonoBehaviour
     {
         //view.transform.localPosition = new Vector3(0, cameraOffset, 0);
         UpdateFOV();
+        Application.targetFrameRate = 60;
     }
 
     // Update is called once per frame
@@ -151,11 +152,11 @@ public class PlayerController : MonoBehaviour
         wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
+        doubleJumped = false;
         if (jumped)
         {
             jump = false;
-            jumped = false;
-            doubleJumped = false;
+            jumped = false;            
             canWallRun = true;
         }
 
