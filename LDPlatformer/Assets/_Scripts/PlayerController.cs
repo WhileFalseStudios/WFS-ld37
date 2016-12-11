@@ -189,7 +189,7 @@ public class PlayerController : MonoBehaviour
         move = controller.velocity;
         if (jump && !wallRunScript.isWallRunning && !doubleJumped)
         {
-            oldy += jumpHeight * 2;
+            oldy += jumpHeight * 1.5f;
             doubleJumped = true;
         }
 
