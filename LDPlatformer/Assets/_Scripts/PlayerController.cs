@@ -155,15 +155,8 @@ public class PlayerController : MonoBehaviour
         if (jumped)
         {
             jump = false;
-<<<<<<< HEAD
             jumped = false;
-<<<<<<< HEAD
-=======
-            jumped = false;            
->>>>>>> origin/master
-=======
             doubleJumped = false;
->>>>>>> parent of 4ac6510... Fixed Falling and Teleport
             canWallRun = true;
         }
 
