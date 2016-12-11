@@ -62,7 +62,9 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     public float TiltSpeed = 30.0f;
-    
+
+    [HideInInspector]
+    public bool canWallRun;
     [SerializeField]
     WallRun wallRunScript;
 
@@ -80,18 +82,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        //Debug.LogWarning("Previous: " + previouslyGrounded.ToString());
-        //Debug.LogError("Is Grounded: " + controller.isGrounded.ToString());
-        if ((!controller.isGrounded && previouslyGrounded)
-            || (controller.isGrounded && !previouslyGrounded))
-        {
-            jump = false;
-            doubleJumped = false;
-        }
-
-        previouslyGrounded = controller.isGrounded;
-
-
         velocity = transform.position - oldPos;
 
         if (controller.isGrounded)
@@ -141,6 +131,13 @@ public class PlayerController : MonoBehaviour
 
         //if (!previouslyGrounded && controller.isGrounded)
         //{
+        //    previouslyGrounded = false;
+        //}
+
+        //previouslyGrounded = controller.isGrounded;
+
+        //if (!previouslyGrounded && controller.isGrounded)
+        //{
         //    jump = false;
         //    //jumped = false;
         //    move.y = 0;
@@ -163,9 +160,21 @@ public class PlayerController : MonoBehaviour
         wallRunScript.canWallRun = true;
         move = controller.velocity;
         move /= friction;
+        doubleJumped = false;
+        if (jumped)
+        {
+            jump = false;
+            jumped = false;
+            canWallRun = true;
+        }
+
+        canWallRun = false;
 
         if (jump)
         {
+            jumped = true;
+            jump = false;
+            previouslyGrounded = true;
             move.y = jumpHeight;
         }
         else
