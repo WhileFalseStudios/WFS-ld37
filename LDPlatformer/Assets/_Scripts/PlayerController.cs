@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            Debug.LogError(move.y);
             AirMove(move.y);
             //jump = false;
         }
@@ -174,8 +175,8 @@ public class PlayerController : MonoBehaviour
         else
         {
             // move.y = 0;       
-            float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
-            move.y = movy;
+            // float movy = oldy + ((Physics.gravity.y * Time.deltaTime));
+            move.y = ((Physics.gravity.y * Time.deltaTime));
         }
                     
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * (moveSpeed * 0.2f);
