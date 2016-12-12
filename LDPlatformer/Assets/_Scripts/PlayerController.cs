@@ -30,9 +30,9 @@ public class PlayerController : MonoBehaviour
     //public bool doubleJumped = false;
     public bool jump = false;
     //private bool jumped = false;
+    public bool isGrounded = true;
     private bool previouslyGrounded = false;
     public float WallJumpSpeed = 30.0f;
-
 
     public float offsetPitch = 0.0f;
     float offsetYaw = 0.0f;
@@ -87,6 +87,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isGrounded = IsGrounded();
         //Debug.LogWarning("Previous: " + previouslyGrounded.ToString());
         //Debug.LogError("Is Grounded: " + controller.isGrounded.ToString());
 
@@ -97,13 +98,13 @@ public class PlayerController : MonoBehaviour
         jump = Input.GetButtonDown("Jump");
 
         oldPos = transform.position;
-        if ((!controller.isGrounded && previouslyGrounded)
-            || (controller.isGrounded && !previouslyGrounded))
+        if ((!isGrounded && previouslyGrounded)
+            || (isGrounded && !previouslyGrounded))
         {
             jump = false;
             //doubleJumped = false;
         }
-        previouslyGrounded = controller.isGrounded;
+        previouslyGrounded = isGrounded;
 
         //if (!previouslyGrounded && controller.isGrounded)
         //{
@@ -113,7 +114,7 @@ public class PlayerController : MonoBehaviour
         //}
         velocity = transform.position - oldPos;
 
-        if (controller.isGrounded)
+        if (isGrounded)
         {
             GroundMove(move.y);
         }
@@ -231,7 +232,7 @@ public class PlayerController : MonoBehaviour
 
     void Footsteps()
     {
-        if (controller.isGrounded)
+        if (isGrounded)
         {
             if (footstepTimer >= 1 / (controller.velocity.magnitude / footstepSpeed))
             {
@@ -248,6 +249,21 @@ public class PlayerController : MonoBehaviour
     void UpdateFOV()
     {
         view.fieldOfView = fov;
+    }
+
+    public bool IsGrounded()
+    {
+        if (controller.isGrounded)
+        {
+            return true;
+        }
+
+        if (Physics.Linecast(transform.position, -transform.up * 0.5f + transform.position))
+        {
+            return true;
+        }
+
+        return false;
     }
 
 }

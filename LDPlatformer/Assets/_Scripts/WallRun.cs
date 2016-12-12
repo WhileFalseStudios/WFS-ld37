@@ -77,7 +77,7 @@ public class WallRun : MonoBehaviour {
         bool dLeft = DetectLeftWall(); //Better than raycasting 500 times per frame
         bool dRight = DetectRightWall();
 
-        if ((!(dRight && dLeft) && !characterController.isGrounded && canWallRun)
+        if ((!(dRight && dLeft) && !playerController.isGrounded && canWallRun)
             && ((dLeft || dRight))) //What the?
         {
             if (Input.GetKeyDown(KeyCode.LeftControl))
