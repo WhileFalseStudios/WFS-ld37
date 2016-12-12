@@ -177,7 +177,7 @@ public class PlayerController : MonoBehaviour
                     
         move += (gameObject.transform.forward * Input.GetAxis("Vertical") + gameObject.transform.right * Input.GetAxis("Horizontal")).normalized * (moveSpeed * 0.2f);
         move = Vector3.ClampMagnitude(move, moveSpeed);
-        //Footsteps();   
+        Footsteps();   
     }
 
     void AirMove(float oldy)
@@ -232,6 +232,9 @@ public class PlayerController : MonoBehaviour
 
     void Footsteps()
     {
+        if (footstepSounds.Length < 1)
+            return;
+
         if (isGrounded)
         {
             if (footstepTimer >= 1 / (controller.velocity.magnitude / footstepSpeed))
