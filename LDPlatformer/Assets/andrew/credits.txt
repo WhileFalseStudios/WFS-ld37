@@ -1,0 +1,20 @@
+Developed by David Wu and Andrew Castillo (While False Studios) for Ludum Dare 37 (One Room)
+
+www.whilefalsestudios.com
+
+Asset sources:
+- Custom-made level art
+- Array House Example (http://3dartdh.wordpress.com/)
+- Various Public Domain photos
+- FreeSFX (http://www.freesfx.co.uk)
+
+Software used:
+- Unity 5.5 with ProBuilder
+- Visual Studio 2015
+- Photoshop
+- Substance Painter
+- Blender
+- Audacity
+- Illustrator
+- Git
+- Discord
