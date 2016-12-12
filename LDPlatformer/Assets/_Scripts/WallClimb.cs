@@ -79,6 +79,9 @@ public class WallClimb : MonoBehaviour {
 
     bool CanClimb()
     {
+        if (GetComponent<WallRun>().isWallRunning)
+            return false;
+
         // checkLocation = Vector3.forward + new Vector3(0, 1, 0);
         eyePosition = player.transform.position + new Vector3(0, 0.5f, 0);
         checkLocation = player.transform.forward + new Vector3(0, 1.5f, 0);

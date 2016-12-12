@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.ImageEffects;
 
 public class Teleport : MonoBehaviour {
 
@@ -23,6 +24,7 @@ public class Teleport : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Q) && canTeleport)
         {
             TeleportToRoom();
+            TeleportFX();
         }
 	}
 
@@ -39,6 +41,24 @@ public class Teleport : MonoBehaviour {
         backgroundScenery[roomNumber].SetActive(true);
         backgroundScenery[currentRoom].SetActive(false);
         currentRoom = roomNumber;
+    }
+
+    void TeleportFX()
+    {
+        Camera[] cams = player.GetComponentsInChildren<Camera>();
+
+        foreach (var cam in cams)
+        {
+            if (currentRoom == 1)
+            {
+                cam.GetComponent<ColorCorrectionLookup>().enabled = true;
+            }
+            else
+            {
+                cam.GetComponent<ColorCorrectionLookup>().enabled = false;
+            }
+        }
+
     }
 
     Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
