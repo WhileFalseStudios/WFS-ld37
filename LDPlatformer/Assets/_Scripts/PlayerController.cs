@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 2.0f;
     public float gravityMultiplier = 0.0f;
     public bool stopSnapping = false;
-    public bool doubleJumped = false;
+    //public bool doubleJumped = false;
     public bool jump = false;
     //private bool jumped = false;
     private bool previouslyGrounded = false;
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour
             || (controller.isGrounded && !previouslyGrounded))
         {
             jump = false;
-            doubleJumped = false;
+            //doubleJumped = false;
         }
         previouslyGrounded = controller.isGrounded;
 
@@ -165,6 +165,7 @@ public class PlayerController : MonoBehaviour
         if (jump)
         {
             move.y = jumpHeight;
+            previouslyGrounded = true;
         }
         else
         {
@@ -181,11 +182,11 @@ public class PlayerController : MonoBehaviour
     void AirMove(float oldy)
     {
         move = controller.velocity;
-        if (jump && !wallRunScript.isWallRunning && !doubleJumped)
-        {
-            oldy += jumpHeight * 1.5f;
-            doubleJumped = true;
-        }
+        //if (jump && !wallRunScript.isWallRunning/* && !doubleJumped*/)
+        //{
+        //    oldy += jumpHeight * 1.5f;
+        //    //doubleJumped = true;
+        //}
         if (controller.velocity.y < 0.1f && controller.velocity.y > -0.1f && oldy > 0.0f)
         {
             oldy = 0.0f;
