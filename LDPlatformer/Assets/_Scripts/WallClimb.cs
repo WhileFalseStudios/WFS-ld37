@@ -73,6 +73,8 @@ public class WallClimb : MonoBehaviour {
         //rb.isKinematic = false;
         inAnimation = false;
 
+        //ANDREW: added velocity kill so we don't fly off after climbing
+        playerController.move = new Vector3(0, 0, 0);
     }
 
     bool CanClimb()
