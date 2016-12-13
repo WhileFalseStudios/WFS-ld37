@@ -89,6 +89,11 @@ public class PlayerController : MonoBehaviour
         //Debug.LogWarning("Previous: " + previouslyGrounded.ToString());
         //Debug.LogError("Is Grounded: " + controller.isGrounded.ToString());
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(0);
+        }
+
         Cursor.lockState = CursorLockMode.Locked; // HACK
         Look();
 

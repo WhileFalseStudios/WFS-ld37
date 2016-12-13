@@ -85,7 +85,7 @@ public class Teleport : MonoBehaviour {
 
         foreach (var cam in cams)
         {            
-            if (currentRoom == 1)
+            if (currentRoom == 0)
             {
                 cam.GetComponent<ColorCorrectionLookup>().enabled = true;
                 
