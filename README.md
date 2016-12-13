@@ -21,5 +21,7 @@ First person parkour game made in 72 hours (essentially) from scratch.
 
 ## Links
 https://wfs.itch.io/switch-ludumdare37
+
 http://ludumdare.com/compo/2016/12/12/wait-we-actually-finished-a-postmortem-of-our-first-jam/
+
 http://ludumdare.com/compo/ludum-dare-37/?action=preview&uid=125592
